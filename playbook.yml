@@ -75,19 +75,19 @@
          - php8.2-mysql
 
       - name: Clone project
-        ansible.builtin.command: git clone https://github.com/ValentinJT/Ansible-Backend.git
+        ansible.builtin.command: git clone https://github.com/ValentinJT/Ansible-Backend.git backend
         args:
           chdir: /var/www/
 
-      - name: Rename directory
-        ansible.builtin.command: mv ./Ansible-Backend ./e-commerce
-        args:
-          chdir: /var/www/
+#      - name: Rename directory
+#        ansible.builtin.command: mv ./Ansible-Backend ./backend
+#        args:
+#          chdir: /var/www/
 
-      - name: Move env file
-        ansible.builtin.copy:
-          src: /home/valentin/e-commerce/.env 
-          dest: /var/www/e-commerce/.env
+#      - name: Move env file
+#        ansible.builtin.copy:
+#          src: /home/valentin/e-commerce/.env 
+#          dest: /var/www/e-commerce/.env
 
       - name: Download composer
         ansible.builtin.get_url:
@@ -103,20 +103,20 @@
         community.general.composer:
           command: install
 #          composer_executable: /usr/local/bin/composer/composer.phar
-          working_dir: /var/www/e-commerce/
+          working_dir: /var/www/backend/
           no_dev: false
         environment:
           COMPOSER_ALLOW_SUPERUSER: "1"
 
       - name: Doctrine | Execute migrations
-        command: "php /var/www/e-commerce/bin/console doctrine:migrations:migrate --no-interaction"
+        command: "php /var/www/backend/bin/console doctrine:migrations:migrate --no-interaction"
       
       - name: LexikJWT | Generate keys
-        command: "php /var/www/e-commerce/bin/console lexik:jwt:generate-keypair --overwrite"
+        command: "php /var/www/backend/bin/console lexik:jwt:generate-keypair --overwrite"
       
       - name: Move Nginx config
         ansible.builtin.copy:
-          src: /home/valentin/nginx.conf
+          src: ./nginx.conf
           dest: /etc/nginx/sites-available/default
           owner: root
           group: root
@@ -127,7 +127,7 @@
 
       - name: Move Nginx config
         ansible.builtin.copy:
-          src: /home/valentin/nginx.conf
+          src: ./nginx.conf
           dest: /etc/nginx/sites-available/default
           owner: root
           group: root
