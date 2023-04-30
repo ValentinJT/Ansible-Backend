@@ -71,7 +71,7 @@ class CartController extends AbstractController
             return new JsonResponse($error["message"], $error["code"], [], true);
         }
 
-        $cart = $this->cartRepository->findOneBy(["user" => $user, "product" => $product]);
+        $cart = $this->cartRepository->findOneByProductAndUser($product, $user);
 
         if($cart == null) {
             $newCart = new Cart();
@@ -187,6 +187,7 @@ class CartController extends AbstractController
 
     private function convertProduct(Product $product): array {
         return [
+            "id" => $product->getId(),
             "name" => $product->getName(),
             "description" => $product->getDescription(),
             "price" => $product->getPrice(),
